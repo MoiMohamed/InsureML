@@ -1,0 +1,35 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+.streamlit/secrets.toml
+.env
+.env.*
+!.env.example
+artifacts/
+wandb/
+project2/
+files.zip
+*.log
+*.tmp
+*.temp
+
+# Python caches / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.ipynb_checkpoints/
+.cache/
+
+# Coverage / test outputs
+.coverage
+.coverage.*
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
