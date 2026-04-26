@@ -98,11 +98,13 @@ def build_preprocessor(
 
     Returns (preprocessor, numeric_cols, categorical_cols).
     """
-    numeric_cols = [
-        c for c in df.columns if df[c].dtype != "object" and c != TARGET_COL
-    ]
-    categorical_cols = [c for c in df.columns if df[c].dtype == "object"]
+    categorical_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
 
+    numeric_cols = [
+        c for c in df.select_dtypes(include=["number"]).columns.tolist()
+        if c != TARGET_COL
+    ]
+    
     preprocessor = ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), numeric_cols),
@@ -290,7 +292,7 @@ def train_all_models(df: pd.DataFrame, selected_features: tuple[str, ...] | None
     )
 
     # Build preprocessor on the effective training schema (selected features only).
-    preprocessor, _, _ = build_preprocessor(pd.concat([X, y], axis=1))
+    preprocessor, _, _ = build_preprocessor(X_train)    
     model_candidates = build_model_candidates()
     trained_results: List[ModelResult] = []
 
@@ -363,7 +365,8 @@ def train_all_models(df: pd.DataFrame, selected_features: tuple[str, ...] | None
                 cv_rmse = float(-np.mean(cv_res["test_rmse"]))
                 cv_rmse_std = float(np.std(-cv_res["test_rmse"]))
                 cv_r2 = float(np.mean(cv_res["test_r2"]))
-        except Exception:
+        except Exception as e:
+            st.error(e)
             continue
 
         fitted_model = best_pipe.named_steps["model"]

@@ -252,7 +252,7 @@ def render(df: pd.DataFrame):
                 return 0.0
             return float(np.sqrt(phi2_corr / denom))
 
-        cat_cols = [c for c in df.columns if df[c].dtype == "object"]
+        cat_cols = df.select_dtypes(include=["object", "string", "category"]).columns.tolist()  
         charge_bins = pd.qcut(df[TARGET_COL], q=5, duplicates="drop")
         cv_rows = []
         for col in cat_cols:

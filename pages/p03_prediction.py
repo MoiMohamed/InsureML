@@ -47,7 +47,7 @@ def _collect_user_inputs(df: pd.DataFrame) -> pd.DataFrame:
     x_cols = [c for c in df.columns if c != TARGET_COL]
     inputs = {}
     for col in x_cols:
-        if df[col].dtype == "object":
+        if pd.api.types.is_string_dtype(df[col]) or pd.api.types.is_categorical_dtype(df[col]):
             options = sorted(df[col].dropna().unique().tolist())
             inputs[col] = st.selectbox(f"**{col.upper()}**", options)
         elif np.issubdtype(df[col].dtype, np.integer):
@@ -384,7 +384,7 @@ def render(df: pd.DataFrame, training: dict):
 
         with col1:
             for col in x_cols[:half]:
-                if df[col].dtype == "object":
+                if pd.api.types.is_string_dtype(df[col]) or pd.api.types.is_categorical_dtype(df[col]):
                     opts = sorted(df[col].dropna().unique().tolist())
                     inputs[col] = st.selectbox(col.upper(), opts)
                 elif np.issubdtype(df[col].dtype, np.integer):
@@ -396,7 +396,7 @@ def render(df: pd.DataFrame, training: dict):
 
         with col2:
             for col in x_cols[half:]:
-                if df[col].dtype == "object":
+                if pd.api.types.is_string_dtype(df[col]) or pd.api.types.is_categorical_dtype(df[col]):
                     opts = sorted(df[col].dropna().unique().tolist())
                     inputs[col] = st.selectbox(col.upper(), opts)
                 elif np.issubdtype(df[col].dtype, np.integer):
